@@ -1,18 +1,77 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "monty.h"
+#include <string.h>
 
-/**
- * push - pushes an element to the stack.
- * @stack: Double pointer to the beginning of the stack.
- * @line_number: line number in the monty bytecode file.
- */
+#define DELIMITERS " \n\t\a\b"
+#define MAX_LINE_LENGTH 80
 
-void push(stack_t **stack, insigned int line_number)
+void execute_instruction(stack_t **stack,
+		char *line,
+		unsigned int line_number);
+
+
+int main(int argc, char **argv)
 {
-	char *argument = strtok(NULL, " \n");
-	int num;
-
-	if (!argument)
+	if (argc != 2)
 	{
-		fprintf(stderr,
+		fprintf(stderr, "USAGE: monty file\n");
+		return (EXIT_FAILURE);
+	}
+
+	FILE *file = fopen(argv[1], "r");
+
+	if (file == NULL)
+	{
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
+		return (EXIT_FAILURE);
+	}
+
+	stack_t *stack = NULL;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	unsigned int line_number = 0;
+
+	while ((read = getline(&line, &len, file)) != -1)
+	{
+		line_number++;
+		execute_instruction(&stack, line, line_number);
+	}
+
+	free(line);
+	fclose(file);
+	return (EXIT_SUCCESS);
+
+void execute_instruction(stack_t **stack,
+		char *line,
+		unsigned int line_number);
+{
+	char *opcode = strtok(line, DELIMITERS);
+
+	if (opcode == NULL || opcode[0] == '#')
+		return;
+
+	if (strcmp(opcode, "push") == 0)
+	{
+		char *arg = strtok(NULL, DELIMITERS);
+
+		if (arg == NULL)
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+		int value = atoi(arg);
+
+		if (value == 0 && *arg != '0')
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+		push(stack, value);
+	}
+	else if (strcmp(opcode, "pall") == 0)
+	{
+		pall(stack);
+	}
+}
