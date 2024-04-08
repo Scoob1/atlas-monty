@@ -42,10 +42,11 @@ int main(int argc, char **argv)
 	free(line);
 	fclose(file);
 	return (EXIT_SUCCESS);
+}
 
 void execute_instruction(stack_t **stack,
 		char *line,
-		unsigned int line_number);
+		unsigned int line_number)
 {
 	char *opcode = strtok(line, DELIMITERS);
 
