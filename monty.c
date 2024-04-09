@@ -37,9 +37,6 @@ int main(int argc, char **argv)
 	{
 		line_number++;
 		execute_instruction(&stack, line, line_number);
-		free(line);
-		line = NULL;
-		len = 0;
 	}
 
 	free(line);
