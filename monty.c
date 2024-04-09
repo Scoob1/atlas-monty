@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 		free(line);
 		line = NULL;
 		len = 0;
+		free(line);
 	}
 
 	free(line);
