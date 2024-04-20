@@ -1,32 +1,41 @@
 #include "monty.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 /**
- * push - Pushes an element onto the stack
- * @stack: Double pointer to the head of the stack
- * @line_number: Line number of the opcode in the file
+ * push - puts elements on thte stack
+ * @stack: pointer to the top of the stack
+ * @line_number: instructions will appear
  */
 
-void push(stack_t **stack, int value)
+void push(stack_t **stack, int line_number)
 {
+	char *arg = strtok(NULL, " \t\n");
+
+	if (arg == NULL)
+	{
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
+	char *endptr;
+	long int value = strtol(arg, &endptr, 10);
+
+	if (*endptr != '\0' && !isspace(*endptr))
+	{
+		fprintf(stderr, "L%u: usage: push integer\n", line_number);
+		exit(EXIT_FAILURE);
+	}
 	stack_t *new_node = malloc(sizeof(stack_t));
+
 	if (new_node == NULL)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-
 	new_node->n = value;
 	new_node->prev = NULL;
+	new_node->next = *stack;
+
 	if (*stack != NULL)
-	{
-		new_node->next = *stack;
 		(*stack)->prev = new_node;
-	}
-	else
-	{
-		new_node->next = NULL;
-	}
 	*stack = new_node;
 }

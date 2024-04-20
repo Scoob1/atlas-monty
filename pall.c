@@ -7,7 +7,7 @@
  * @line_number: Line number of the opcode in the file
  */
 
-void pall(stack_t **stack)
+void pall(stack_t **stack, unsigned int line_number)
 {
 	stack_t *current = *stack;
 	while (current != NULL)
